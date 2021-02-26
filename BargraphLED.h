@@ -1,5 +1,12 @@
-#ifndef HT16K33_h
-  #define HT16K33_h
+/**********************************************************************
+ *
+ * This is the library for the BL28 LED bargraph module
+ * 
+ * Original HT16K33 source code: https://github.com/jonpearse/ht16k33-arduino
+ *
+ **********************************************************************/
+#ifndef BargraphLED_h
+  #define BargraphLED_h
   
   // include appropriate version of Arduino code
   #if (ARDUINO >= 100)
@@ -10,7 +17,6 @@
   
   // include Wire for I2C comms  
   #include <Wire.h>
-  #include "Sprite16.h"
   
   // different commands
   #define HT16K33_CMD_RAM     0x00
@@ -26,10 +32,12 @@
   #define HT16K33_BLINK_1HZ   0x02
   #define HT16K33_BLINK_2HZ   0x04
   #define HT16K33_BLINK_0HZ5  0x06
-
+  
+  // bargraph options
+  #define BARGRAPH_SIZE       28
   
   // actual class
-  class HT16K33
+  class BargraphLED
   {
     public:
       void init(uint8_t addr);
@@ -40,33 +48,22 @@
       // blink controls
       void setBlink(uint8_t blink);
       
-      // orientation
-      void resetOrientation(void);
-      void reverse(void);
-      void flipVertical(void);
-      void flipHorizontal(void);
-      
       // buffer stuff
       void clear(void);
       void setPixel(uint8_t row, uint8_t col, uint8_t onff);
-      void setRow(uint8_t row, uint16_t value);
-      void setColumn(uint8_t col, uint8_t value);
-      void drawSprite16(Sprite16 data, uint8_t colOffset, uint8_t rowOffset);
-      void drawSprite16(Sprite16 data);
       
       // read/write
       void write(void);
-      
+	  
+      // bargraph functions
+      void setSegment(uint8_t pos, uint8_t value);
+	    uint8_t size(void);
+	        
     private:
       uint16_t *_buffer;
       uint8_t  _i2c_addr;
-      bool     _reversed;
-      bool     _vFlipped;
-      bool     _hFlipped;
       
-      void writeRow(uint8_t row);
-      
+      void writeRow(uint8_t col);
   };
   
-#endif // #HT16K33
-    
+#endif
